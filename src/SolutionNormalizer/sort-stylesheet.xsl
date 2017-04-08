@@ -7,10 +7,12 @@
   <xsl:copy>
    <xsl:apply-templates select="@*">
     <xsl:sort select="name()"/>
+     <xsl:sort select="@*" />
    </xsl:apply-templates>
 
    <xsl:apply-templates select="node()">
     <xsl:sort select="name()"/>
+     <xsl:sort select="@*" />
    </xsl:apply-templates>
   </xsl:copy>
  </xsl:template>
