@@ -21,27 +21,6 @@ namespace SolutionNormalizer
 
         public static void ExecuteOperation(string sourceFile, string workingFolder, string styleSheet)
         {
-
-            //var normalizationService = new Operations.XmlNormalizationService();
-            //normalizationService.SourceFolder = @"D:\temp\solution compare\crm-source";
-            //normalizationService.StyleSheetPath = @"sort-stylesheet.xsl";
-            //normalizationService.DestinationFolder = @"D:\temp\solution compare\crm-transformed";
-
-            //normalizationService.ProcessSolution();
-
-
-            //var normalizationService2 = new Operations.XmlNormalizationService();
-            //normalizationService2.SourceFolder = @"D:\temp\solution compare\packager-source";
-            //normalizationService2.StyleSheetPath = @"sort-stylesheet.xsl";
-            //normalizationService2.DestinationFolder = @"D:\temp\solution compare\packager-transformed";
-
-            //normalizationService2.ProcessSolution();
-
-
-#if DEBUG
-            System.Diagnostics.Debugger.Launch();
-#endif
-
             if (string.IsNullOrEmpty(workingFolder))
             {
                 var assembly = Assembly.GetExecutingAssembly();

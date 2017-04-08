@@ -37,8 +37,15 @@ namespace SolutionNormalizer.Operations
 
         public XmlWriter GetWriter(string outputFile)
         {
-            var writer = new XmlWriterExplicitFullEndElement(outputFile, System.Text.Encoding.UTF8);
-            writer.Formatting = Formatting.Indented;
+
+            //todo: factory to decide the type of xml writer
+            //var writer = new XmlWriterExplicitFullEndElement(outputFile, System.Text.Encoding.UTF8);
+            //writer.Formatting = Formatting.Indented;
+
+            var writer = XmlWriter.Create(outputFile, new XmlWriterSettings()
+            {
+                Indent = true
+            });
             return writer;
         }
     }
