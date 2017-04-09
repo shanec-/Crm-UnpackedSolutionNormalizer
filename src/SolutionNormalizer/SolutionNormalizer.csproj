@@ -67,6 +67,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="savedquery-stylesheet.xslt" />
     <Content Include="sort-stylesheet.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Xsl;
 
@@ -14,16 +15,18 @@ namespace SolutionNormalizer.Operations
 
         public void ProcessSolution()
         {
-            var files = Directory.GetFiles(SourceFolder, "*.xml", SearchOption.AllDirectories);
+            var files = Directory.GetFiles(SourceFolder, "*", SearchOption.AllDirectories)
+                .Where(x => x.EndsWith(".xml") || x.EndsWith(".xaml"));
 
             XslCompiledTransform xslt = new XslCompiledTransform(true);
             xslt.Load(StyleSheetPath);
 
             foreach (string inputFile in files)
             {
-                string outputFile = Path.Combine(DestinationFolder, Path.GetFileName(inputFile));
+                string destinationFile = inputFile.Replace(SourceFolder, DestinationFolder);
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationFile));
 
-                using (var wr = this.GetWriter(outputFile))
+                using (var wr = this.GetWriter(destinationFile))
                 {
                     xslt.Transform(inputFile, null, wr);
                 }
@@ -39,7 +42,9 @@ namespace SolutionNormalizer.Operations
 
             var writer = XmlWriter.Create(outputFile, new XmlWriterSettings()
             {
-                Indent = true
+                Indent = true,
+                ConformanceLevel = ConformanceLevel.Fragment
+                
             });
             return writer;
         }

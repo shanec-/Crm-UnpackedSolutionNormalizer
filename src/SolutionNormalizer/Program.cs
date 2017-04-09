@@ -56,6 +56,10 @@ namespace SolutionNormalizer
             Directory.CreateDirectory(sourceFolder);
             Directory.CreateDirectory(transformedFolder);
 
+#if DEBUG
+            System.Diagnostics.Debugger.Launch();
+#endif
+
             Log.Information("Extracing {@sourceFile} into {@sourceFolder}...", sourceFile, sourceFolder);
             ZipFile.ExtractToDirectory(sourceFile, sourceFolder);
 
