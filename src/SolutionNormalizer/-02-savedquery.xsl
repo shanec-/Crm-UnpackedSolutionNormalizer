@@ -18,4 +18,14 @@
       </xsl:apply-templates>
     </xsl:copy>
   </xsl:template>
+
+  <xsl:template match="FormXml">
+    <xsl:copy>
+      <!--<xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="*"/>-->
+      <xsl:apply-templates select="forms">
+        <xsl:sort select="@type"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
 </xsl:stylesheet>

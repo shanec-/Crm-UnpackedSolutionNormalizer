@@ -67,10 +67,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="savedquery-stylesheet.xsl">
+    <Content Include="-02-savedquery.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="sort-stylesheet.xsl">
+    <Content Include="-01-sort.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -3,6 +3,7 @@ using Serilog;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Linq;
 
 namespace SolutionNormalizer
 {
@@ -13,12 +14,12 @@ namespace SolutionNormalizer
             InitializeLog();
 
             var options = Parser.Default.ParseArguments<CommandLineOptions>(args);
-            options.WithParsed(x => ExecuteOperation(x.SourceZipFile, x.WorkingFolder, x.StyleSheet));
+            options.WithParsed(x => ExecuteOperation(x.SourceZipFile, x.WorkingFolder));
         }
 
-        public static void ExecuteOperation(string sourceFile, string workingFolder, string styleSheet)
+        public static void ExecuteOperation(string sourceZipFile, string workingFolder)
         {
-            Log.Debug("Source File: {@sourceFile}, Working Folder: {@workingFolder}, StyleSheet {@styleSheet}", sourceFile, workingFolder, styleSheet);
+            Log.Debug("Source File: {@sourceFile}, Working Folder: {@workingFolder}", sourceZipFile, workingFolder);
 
             if (string.IsNullOrEmpty(workingFolder))
             {
@@ -27,73 +28,48 @@ namespace SolutionNormalizer
                 Log.Debug("Setting new working folder {@workingFolder}", workingFolder);
             }
 
-            string styleSheet2 = string.Empty;
-            if (string.IsNullOrEmpty(styleSheet))
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-                var rootFolder = Path.GetDirectoryName(assembly.Location);
-                styleSheet = Path.Combine(rootFolder, "sort-stylesheet.xsl");
-                styleSheet2 = Path.Combine(rootFolder, "savedquery-stylesheet.xsl");
-                Log.Debug("Setting new working folder {@workingFolder}", styleSheet);
-            }
-
-            string sourceFileName = Path.GetFileName(sourceFile);
-            string sourceFolder = Path.Combine(workingFolder, sourceFileName + "-source");
-            string transformedFolder = Path.Combine(workingFolder, sourceFileName + "-transformed");
-
+            string sourceFileNamePath = Path.GetFileName(sourceZipFile);
+            string sourceFolder = Path.Combine(workingFolder, sourceFileNamePath + "-source");
 
             if (Directory.Exists(sourceFolder))
             {
                 Directory.Delete(sourceFolder, true);
                 Log.Warning("{@sourceFolder} exists, deleting...", sourceFolder);
             }
-
-            if (Directory.Exists(transformedFolder))
-            {
-                Directory.Delete(transformedFolder, true);
-                Log.Warning("{@transformedFolder} exists, deleting...", transformedFolder);
-            }
-
             Log.Information("Creating new folders {@sourceFolder}...", sourceFolder);
-            Log.Information("Creating new folders {@transformedFolder}...", transformedFolder);
             Directory.CreateDirectory(sourceFolder);
-            Directory.CreateDirectory(transformedFolder);
 
-            string transformed2Folder = Path.Combine(workingFolder, sourceFileName + "-transformed2");
-            if (Directory.Exists(transformed2Folder))
+            Log.Information("Extracting {@sourceZipFile} into {@sourceFolder}...", sourceZipFile, sourceFolder);
+            ZipFile.ExtractToDirectory(sourceZipFile, sourceFolder);
+
+            var stylesheetPaths = Directory.GetFiles(".", "*.xsl", SearchOption.AllDirectories).OrderBy(x => x);
+
+            foreach (string styleSheetPath in stylesheetPaths)
             {
-                Directory.Delete(transformed2Folder, true);
-                Log.Warning("{@transformed2Folder} exists, deleting...", transformed2Folder);
+                string styleSheetName = Path.GetFileName(styleSheetPath);
+                string transformedFolder = Path.Combine(workingFolder, sourceFileNamePath + styleSheetName + "-transformed");
+                if (Directory.Exists(transformedFolder))
+                {
+                    Directory.Delete(transformedFolder, true);
+                    Log.Warning("{@transformedFolder} exists, deleting...", transformedFolder);
+                }
+
+                Log.Information("Creating new folders {@transformedFolder}...", transformedFolder);
+                Directory.CreateDirectory(transformedFolder);
+
+                var normalizationService = new Operations.XmlNormalizationService()
+                {
+                    StyleSheetPath = styleSheetPath,
+                    SourceFolder = sourceFolder,
+                    DestinationFolder = transformedFolder
+                };
+
+                Log.Information("Attempting to process {@styleSheetName}...", styleSheetName);
+                normalizationService.ProcessSolution();
+                Log.Information("Processing completed {@styleSheetName}.", styleSheetName);
+
+                sourceFolder = transformedFolder;
             }
-            Directory.CreateDirectory(transformed2Folder);
-
-#if DEBUG
-            System.Diagnostics.Debugger.Launch();
-#endif
-
-            Log.Information("Extracing {@sourceFile} into {@sourceFolder}...", sourceFile, sourceFolder);
-            ZipFile.ExtractToDirectory(sourceFile, sourceFolder);
-
-            var normalizationService = new Operations.XmlNormalizationService()
-            {
-                StyleSheetPath = styleSheet,
-                SourceFolder = sourceFolder,
-                DestinationFolder = transformedFolder
-            };
-
-            Log.Information("Attempting to process folder...");
-            normalizationService.ProcessSolution();
-            Log.Information("Completed Successfully!");
-
-            var service2 = new Operations.XmlNormalizationService()
-            {
-                StyleSheetPath = styleSheet2,
-                SourceFolder = transformedFolder,
-                DestinationFolder = transformed2Folder
-            };
-
-            service2.ProcessSolution();
-
         }
 
         private static void InitializeLog()
