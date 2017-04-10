@@ -28,4 +28,14 @@
       </xsl:apply-templates>
     </xsl:copy>
   </xsl:template>
+
+  <xsl:template match="Workflows">
+    <xsl:copy>
+      <!--<xsl:apply-templates select="@*"/>
+      <xsl:apply-templates select="*"/>-->
+      <xsl:apply-templates select="Workflow">
+        <xsl:sort select="@Name"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
 </xsl:stylesheet>
