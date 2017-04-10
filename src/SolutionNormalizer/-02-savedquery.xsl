@@ -11,8 +11,6 @@
 
   <xsl:template match="SavedQueries/savedqueries">
     <xsl:copy>
-      <!--<xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="*"/>-->
       <xsl:apply-templates select="savedquery">
         <xsl:sort select="LocalizedNames/LocalizedName/@description"/>
       </xsl:apply-templates>
@@ -21,20 +19,61 @@
 
   <xsl:template match="FormXml">
     <xsl:copy>
-      <!--<xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="*"/>-->
       <xsl:apply-templates select="forms">
         <xsl:sort select="@type"/>
+        <xsl:sort select="formid"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="forms">
+    <xsl:copy>
+      <xsl:apply-templates select="systemform">
+        <xsl:sort select="formid"/>
       </xsl:apply-templates>
     </xsl:copy>
   </xsl:template>
 
   <xsl:template match="Workflows">
     <xsl:copy>
-      <!--<xsl:apply-templates select="@*"/>
-      <xsl:apply-templates select="*"/>-->
       <xsl:apply-templates select="Workflow">
+        <xsl:sort select="@WorkflowId"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="WebResources">
+    <xsl:copy>
+      <xsl:apply-templates select="WebResource">
+        <xsl:sort select="WebResourceId"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="SdkMessageProcessingSteps">
+    <xsl:copy>
+      <xsl:apply-templates select="SdkMessageProcessingStep">
         <xsl:sort select="@Name"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="Dashboards">
+    <xsl:copy>
+      <xsl:apply-templates select="Dashboard">
+        <xsl:sort select="FormId"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="MissingDependencies">
+    <xsl:copy>
+      <xsl:apply-templates select="MissingDependency">
+        <xsl:sort select="Required/@id"/>
+        <xsl:sort select="Required/@key"/>
+        <xsl:sort select="Required/@schemaName"/>
+        <xsl:sort select="Required/@displayName"/>
+        <xsl:sort select="Required/@solution"/>
       </xsl:apply-templates>
     </xsl:copy>
   </xsl:template>
