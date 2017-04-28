@@ -1,0 +1,29 @@
+{
+  "name": "crm-unpackedsolutionnormalizer",
+  "version": "1.0.0",
+  "description": "Dynamics CRM unpacked-solution normalizer. \r This tool facilitates the transformation of XML files unpacked by the solution packager (provided by Dynamics CRM SDK) with the use of XSLT stylesheets.",
+  "main": "index.js",
+  "dependencies": {
+    "cz-conventional-changelog": "^2.0.0"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^2.0.0"
+  },
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shanec-/Crm-UnpackedSolutionNormalizer.git"
+  },
+  "author": "Shane Carvalho",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/shanec-/Crm-UnpackedSolutionNormalizer/issues"
+  },
+  "homepage": "https://github.com/shanec-/Crm-UnpackedSolutionNormalizer#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
